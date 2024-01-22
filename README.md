@@ -1,0 +1,1 @@
+# Projekt na przedmiot narzędzia sztucznej inteligencji
