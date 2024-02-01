@@ -23,15 +23,15 @@ first_summarizer_generated_summaries = []
 second_summarizer_generated_summaries = []
 third_summarizer_generated_summaries = []
 
-for text in texts:
-    first_summarizer_generated_summaries.append(first_summarizer.generate_summary(text))
-    # second_summarizer_generated_summaries.append(second_summarizer.generate_summary(text))
-    # third_summarizer_generated_summaries.append(third_summarizer.generate_summary(text))
 
-print(first_summarizer_generated_summaries)
+# for text in texts:
+# first_summarizer_generated_summaries.append(first_summarizer.generate_summary(text))
+# second_summarizer_generated_summaries.append(second_summarizer.generate_summary(text))
+# third_summarizer_generated_summaries.append(third_summarizer.generate_summary(text))
+
+# print(first_summarizer_generated_summaries)
 # print(second_summarizer_generated_summaries)
 # print(third_summarizer_generated_summaries)
-
 
 
 # Evaluating model accuracy through the ROUGE (Recall-Oriented Understudy for Gisting Evaluation) metric
@@ -49,7 +49,6 @@ print(first_summarizer_generated_summaries)
 #
 # Recall (r): The ratio of correctly predicted positive observations to all the actual positives.
 # In the context of ROUGE, it represents the recall of the generated summary.
-
 
 
 # rouge = Rouge()
