@@ -1,5 +1,6 @@
 from flask import Flask
 import pandas as pd
+import json
 
 from api import controller
 from models.FirstSummarizer import FirstSummarizer
@@ -14,16 +15,22 @@ first_summarizer = FirstSummarizer()
 second_summarizer = SecondSummarizer()
 third_summarizer = ThirdSummarizer()
 
-# Getting data from a csv file
-file = pd.read_csv("data/data.csv")
 
-texts = file['text'].tolist()
+# Getting data from a json file
+with open("data/test.txt", 'r') as file:
+    data = json.load(file)
+
+texts = data["text"]
+referenced_summaries = data["summary"]
+
 
 first_summarizer_generated_summaries = []
 second_summarizer_generated_summaries = []
 third_summarizer_generated_summaries = []
 
+
 for text in texts:
+    print(len(text))
     first_summarizer_generated_summaries.append(first_summarizer.generate_summary(text))
     # second_summarizer_generated_summaries.append(second_summarizer.generate_summary(text))
     # third_summarizer_generated_summaries.append(third_summarizer.generate_summary(text))
