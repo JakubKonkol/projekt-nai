@@ -2,7 +2,7 @@ import torch
 from transformers import pipeline
 
 class SecondSummarizer:
-    def __init__(self, model_name="pszemraj/led-base-book-summary", min_length=8, max_length=45, no_repeat_ngram_size=3, encoder_no_repeat_ngram_size=3, repetition_penalty=3.5, num_beams=4, do_sample=False, early_stopping=True):
+    def __init__(self, model_name="pszemraj/led-base-book-summary", min_length=8, max_length=110, no_repeat_ngram_size=3, encoder_no_repeat_ngram_size=3, repetition_penalty=3.5, num_beams=4, do_sample=False, early_stopping=True):
         self.summarizer = pipeline("summarization", model=model_name, device=0 if torch.cuda.is_available() else -1)
         self.min_length = min_length
         self.max_length = max_length

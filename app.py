@@ -1,5 +1,7 @@
 from flask import Flask
+from pprint import pprint
 import pandas as pd
+import numpy as np
 
 from api import controller
 from models.FirstSummarizer import FirstSummarizer
@@ -25,12 +27,14 @@ third_summarizer_generated_summaries = []
 
 for text in texts:
     first_summarizer_generated_summaries.append(first_summarizer.generate_summary(text))
-    # second_summarizer_generated_summaries.append(second_summarizer.generate_summary(text))
-    # third_summarizer_generated_summaries.append(third_summarizer.generate_summary(text))
+    second_summarizer_generated_summaries.append(second_summarizer.generate_summary(text))
+    third_summarizer_generated_summaries.append(third_summarizer.generate_summary(text))
 
-print(first_summarizer_generated_summaries)
-# print(second_summarizer_generated_summaries)
-# print(third_summarizer_generated_summaries)
+print(np.array(first_summarizer_generated_summaries))
+print('\n')
+print(np.array(second_summarizer_generated_summaries))
+print('\n')
+print(np.array(third_summarizer_generated_summaries))
 
 
 
