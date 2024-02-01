@@ -15,14 +15,12 @@ first_summarizer = FirstSummarizer()
 second_summarizer = SecondSummarizer()
 third_summarizer = ThirdSummarizer()
 
-
 # Getting data from a json file
 with open("data/test.txt", 'r') as file:
     data = json.load(file)
 
 texts = data["text"]
 referenced_summaries = data["summary"]
-
 
 first_summarizer_generated_summaries = []
 second_summarizer_generated_summaries = []
