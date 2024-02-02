@@ -1,6 +1,6 @@
 from flask import Flask
-import pandas as pd
 import json
+from rouge import Rouge
 
 from api import controller
 from models.FirstSummarizer import FirstSummarizer
@@ -26,49 +26,53 @@ first_summarizer_generated_summaries = []
 second_summarizer_generated_summaries = []
 third_summarizer_generated_summaries = []
 
-
 for text in texts:
-    print(len(text))
     first_summarizer_generated_summaries.append(first_summarizer.generate_summary(text))
-    # second_summarizer_generated_summaries.append(second_summarizer.generate_summary(text))
-    # third_summarizer_generated_summaries.append(third_summarizer.generate_summary(text))
+    second_summarizer_generated_summaries.append(second_summarizer.generate_summary(text))
+    third_summarizer_generated_summaries.append(third_summarizer.generate_summary(text))
 
-print(first_summarizer_generated_summaries)
-# print(second_summarizer_generated_summaries)
-# print(third_summarizer_generated_summaries)
+# Getting only the text of generated summaries
+first_summarizer_generated_summaries_text = [item[0]['summary_text'] for item in first_summarizer_generated_summaries]
+second_summarizer_generated_summaries_text = [item[0]['summary_text'] for item in second_summarizer_generated_summaries]
+third_summarizer_generated_summaries_text = [item[0]['summary_text'] for item in third_summarizer_generated_summaries]
 
+# Mapping model-generated summaries to online generated summaries (reference summaries)
+# Reference summaries have been generated using: https://quillbot.com/summarize
+first_generated_summaries_mapped_to_reference = {key: value for key, value in zip(first_summarizer_generated_summaries_text, referenced_summaries)}
+second_generated_summaries_mapped_to_reference = {key: value for key, value in zip(second_summarizer_generated_summaries_text, referenced_summaries)}
+third_generated_summaries_mapped_to_reference = {key: value for key, value in zip(third_summarizer_generated_summaries_text, referenced_summaries)}
 
+first_summarizer_scores = []
+second_summarizer_scores = []
+third_summarizer_scores = []
 
 # Evaluating model accuracy through the ROUGE (Recall-Oriented Understudy for Gisting Evaluation) metric
+# Getting the scores from the summarizers
+rouge = Rouge()
 
-# rouge-1, rouge-2, rouge-l:
-# Different versions of ROUGE metrics.
-# "rouge-1" evaluates unigram overlap, "rouge-2" evaluates bigram overlap, and "rouge-l" evaluates the longest common subsequence.
-#
-# f, p, r: These stand for F1 score, precision, and recall, respectively.
-#
-# F1 score (f): The harmonic mean of precision and recall. It provides a balanced measure of both precision and recall.
-#
-# Precision (p): The ratio of correctly predicted positive observations to the total predicted positives.
-# In the context of ROUGE, it represents the precision of the generated summary.
-#
-# Recall (r): The ratio of correctly predicted positive observations to all the actual positives.
-# In the context of ROUGE, it represents the recall of the generated summary.
+for key, value in first_generated_summaries_mapped_to_reference.items():
+    first_summarizer_scores.append(rouge.get_scores(key, value))
 
+for key, value in second_generated_summaries_mapped_to_reference.items():
+    second_summarizer_scores.append(rouge.get_scores(key, value))
 
+for key, value in third_generated_summaries_mapped_to_reference.items():
+    third_summarizer_scores.append(rouge.get_scores(key, value))
 
-# rouge = Rouge()
-#
-# reference_summary = """The American Society for the Prevention of Cruelty to Animals (ASPCA) reports that around 78
-# million dogs are owned as pets in the US. Dogs have been domesticated since 20,000-40000 years ago in Europe.
-# They have historically been used for safety, hunting, and companionship.
-# Research shows that dogs can make people happier, more resilient, and physically healthier, supporting their well-being."""
-#
-# generated_summary_third = third_summarizer.generate_summary(example_text)[0]["summary_text"]
-#
-# scores = rouge.get_scores(generated_summary_third, reference_summary)
-# print(scores[0])
+# Getting the total F1 scores of all summarizers
+first_summarizer_total_f1_scores = [item[key]['f'] for sublist in first_summarizer_scores for item in sublist for key in item]
+second_summarizer_total_f1_scores = [item[key]['f'] for sublist in second_summarizer_scores for item in sublist for key in item]
+third_summarizer_total_f1_scores = [item[key]['f'] for sublist in third_summarizer_scores for item in sublist for key in item]
 
+# Calculating F1 means of summarizers
+# F1 = combination of precision and recall
+first_summarizer_mean_score = sum(first_summarizer_total_f1_scores)/len(first_summarizer_total_f1_scores)
+second_summarizer_mean_score = sum(second_summarizer_total_f1_scores)/len(second_summarizer_total_f1_scores)
+third_summarizer_mean_score = sum(third_summarizer_total_f1_scores)/len(third_summarizer_total_f1_scores)
+
+print("First summarizer F1 mean score: " + str(first_summarizer_mean_score))
+print("Second summarizer F1 mean score: " + str(second_summarizer_mean_score))
+print("Third summarizer F1 mean score: " + str(third_summarizer_mean_score))
 
 @app.route('/')
 def hello_world():
