@@ -1,13 +1,14 @@
 from flask import Flask
 import json
 from rouge import Rouge
-
+from flask_cors import CORS
 from api import controller
 from models.FirstSummarizer import FirstSummarizer
 from models.SecondSummarizer import SecondSummarizer
 from models.ThirdSummarizer import ThirdSummarizer
 
 app = Flask(__name__)
+CORS(app)
 app.register_blueprint(controller.summarize_blueprint)
 
 # Setting up summarizers

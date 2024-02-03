@@ -1,7 +1,7 @@
 flask~=3.0.1
 transformers~=4.37.0
 tensorflow~=2.15.0
-
+flask-cors~=4.0.0
 pandas~=2.2.0
 torch~=2.2.0
 rouge~=1.0.1
